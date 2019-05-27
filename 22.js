@@ -3,16 +3,25 @@
  * @return {string[]}
  */
 
-let temp = {};
-var generateParenthesis = function(n) {
-
+let result = [];
+var generateParenthesis = function (n) {
+  result = [];
+  goDeep('', 0, 0, n);
+  return result;
 };
 
-var goDeep = function () {
-  
+var goDeep = function (stringS, start, end, max) {
+  if (stringS.length >= max * 2) {
+    result.push(stringS);
+    return;
+  }
+  if (start < max)
+    goDeep(stringS + '(', start + 1, end, max);
+  if (start > end)
+    goDeep(stringS + ')', start, end + 1, max);
 }
 
-console.log(generateParenthesis(5));
+console.log(generateParenthesis(2));
 
 // want to use Recursive to do this
 // but like failed
