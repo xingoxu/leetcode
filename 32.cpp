@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <stack>
 using namespace std;
 
 class Solution
@@ -8,37 +9,26 @@ public:
   int longestValidParentheses(string s)
   {
     int length = s.size();
-    int stack = 0;
+    stack<int> st;
+    st.push(-1);
     int count = 0;
     int max = 0;
     for (int i = 0; i < length; i++)
     {
       if (s[i] == '(')
       {
-        stack++;
+        st.push(i);
       }
       else
       {
-        stack--;
-      }
-      if (stack >= 0 && s[i] == ')') {
+        st.pop();
+        if (st.empty())
+          st.push(i);
+        int before = st.top();
 
-      }
-
-      if (stack >= 0)
-      {
-        count++;
-      }
-      else
-      {
-        stack = 0;
-        count = 0;
-      }
-
-      int countResult = count - stack;
-      if (count > 0 && countResult > max)
-      {
-        max = countResult;
+        int distance = i - before;
+        if (distance > max)
+          max = distance;
       }
     }
     return max;
@@ -50,6 +40,6 @@ int main()
   Solution *s = new Solution();
 
   vector<int> x{3, 2, 2, 3}; // -4 -1 -1 0 1 2
-  cout << s->longestValidParentheses("()(()()(((()") << endl;
+  cout << s->longestValidParentheses("()))))()()(())") << endl;
   return 0;
 }
