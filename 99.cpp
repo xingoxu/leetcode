@@ -115,20 +115,34 @@ class Solution
 public:
     void recoverTree(TreeNode *root)
     {
-        TreeRoot = root;
-        _recoverTree(root);
+        morrisTravelRecoverTree(root);
     }
-    void morrisTravelRecoverTree(TreeNode *root) {
-        TreeNode *cur = root, *pre, *threadingNode;
-        while (cur) {
-            if(cur->left) {
+    void morrisTravelRecoverTree(TreeNode *root)
+    {
+        TreeNode *cur = root, *pre = NULL, *threadingNode = NULL;
+        TreeNode *first = NULL, *second = NULL;
+        while (cur)
+        {
+            if (cur->left)
+            {
                 threadingNode = cur->left;
-                while (threadingNode->right && threadingNode->right != cur) {
+                while (threadingNode->right && threadingNode->right != cur)
+                {
                     threadingNode = threadingNode->right;
                 }
-                if (threadingNode->right) {
+                if (threadingNode->right)
+                {
                     // do swap here;
                     if (pre != NULL && pre->val > cur->val)
+                    {
+                        if (first)
+                            second = cur;
+                        else
+                        {
+                            first = pre;
+                            second = cur;
+                        }
+                    }
                     pre = cur;
                     cur = cur->right;
                     threadingNode->right = NULL;
@@ -138,15 +152,28 @@ public:
                     threadingNode->right = cur;
                     cur = cur->left;
                 }
-            } else {
+            }
+            else
+            {
                 // the most left node
                 // do swap here;
+                if (pre != NULL && pre->val > cur->val)
+                {
+                    if (first)
+                        second = cur;
+                    else
+                    {
+                        first = pre;
+                        second = cur;
+                    }
+                }
                 pre = cur;
                 cur = cur->right;
             }
         }
+        if (first && second)
+            swap(&first->val, &second->val);
     }
-
     TreeNode *TreeRoot;
     // still use log(n) space
     void _recoverTree(TreeNode *root)
@@ -289,10 +316,9 @@ public:
 
 int main()
 {
-    TreeNode *root = stringToTreeNode("[3,1,4,null,null,2]");
-    morrisTraversal(root);
-    // Solution().recoverTree(root);
+    TreeNode *root = stringToTreeNode("[1,3,null,null,2]");
+    Solution().recoverTree(root);
 
-    // cout << treeNodeToString(root) << endl;
+    cout << treeNodeToString(root) << endl;
     return 0;
 }
