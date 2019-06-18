@@ -88,26 +88,19 @@ public:
           return NULL;
         ListNode *first = head;
         ListNode *second = head;
-        int distance = 0;
-        int distanceFast = 1;
         ListNode *result = NULL;
         while (first && second)
         {
           first = first->next;
           cout << first->val << ' ';
-          ++distanceFast;
           if (first)
           {
             first = first->next;
             cout << first->val << ' ';
-            ++distanceFast;
           }
           second = second->next;
-          ++distance;
           if (first == second){
             cout << endl;
-            cout << "distance: " << distance << endl;
-            cout << "distanceFast: " << distanceFast << endl;
             result = first;
             break;
           }
@@ -116,14 +109,11 @@ public:
           return result;
 
         first = head;
-        distance = 1;
         while (first != second)
         {
           first = first->next;
           second = second->next;
-          ++distance;
         }
-        cout << "distance: " << distance << endl;
         return first;
     }
 };
@@ -132,7 +122,7 @@ int main()
 {
   string line = "[0,1,2,3,4,5,6,7,8,9,10,11]";
   ListNode *head = stringToListNode(line);
-  int pos = 3;
+  int pos = 0;
   ListNode *end = head;
   ListNode *targetNode = NULL;
   int count = 0;

@@ -114,21 +114,24 @@ string treeNodeToString(TreeNode *root)
 class Solution
 {
 public:
-    vector<vector<int>> levelOrder(TreeNode *root)
+    vector<vector<int>> zigzagLevelOrder(TreeNode *root)
     {
         if (!root)
             return {};
         vector<vector<int>> result;
         vector<TreeNode *> thisFloor;
         thisFloor.push_back(root);
+        bool isLeftToRight = true;
         while (!thisFloor.empty())
         {
-            vector<int> floorResult(thisFloor.size());
+            int thisFloorSize = thisFloor.size();
+            vector<int> floorResult(thisFloorSize);
 
             vector<TreeNode *> nextFloor;
-            for (int i = 0; i < thisFloor.size(); i++)
+            for (int i = 0; i < thisFloorSize; i++)
             {
-                floorResult[i] = thisFloor[i]->val;
+                int getIndex = isLeftToRight ? i : (thisFloorSize - i - 1);
+                floorResult[i] = thisFloor[getIndex]->val;
                 if (thisFloor[i]->left)
                     nextFloor.push_back(thisFloor[i]->left);
                 if (thisFloor[i]->right)
@@ -136,6 +139,7 @@ public:
             }
             result.push_back(floorResult);
             thisFloor = nextFloor;
+            isLeftToRight = !isLeftToRight;
         }
         return result;
     }
@@ -145,7 +149,7 @@ int main()
 {
     TreeNode *root = stringToTreeNode("[3,9,20,null,null,15,7]");
 
-    const auto &result = Solution().levelOrder(root);
+    const auto &result = Solution().zigzagLevelOrder(root);
     for (int i = 0; i < result.size();i++) {
         for (int j = 0; j < result[i].size();j++) {
             cout << result[i][j] << ' ';
