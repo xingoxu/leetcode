@@ -25,46 +25,39 @@ public:
   {
     Node *cursor = head;
     Node *newHead = NULL;
-    Node *newCursor = NULL;
     while (cursor)
     {
-      // newNode's random -> originNode
-      Node *newNode = new Node(cursor->val, NULL, cursor);
-      if (newCursor)
-      {
-        newCursor->next = newNode;
-      }
-      else
-      {
-        newHead = newNode;
-      }
-      newCursor = newNode;
-
       Node *current = cursor;
       cursor = cursor->next;
-      // set current next -> newNode
+
+      Node *newNode = new Node(current->val, current->next, current->random);
       current->next = newNode;
     }
 
-    newCursor = newHead;
-    while (newCursor)
+    if (head)
     {
-      Node *originNode = newCursor->random;
-      Node *randomNodeOrigin = originNode->random;
-      if (randomNodeOrigin)
-        newCursor->random = randomNodeOrigin->next;
-      else
-        newCursor->random = NULL;
-
-      if (newCursor->next)
-        originNode->next = newCursor->next->random;
-      else
-        originNode->next = NULL;
-      newCursor = newCursor->next;
+      newHead = head->next;
     }
     cursor = head;
-    newCursor = newHead;
+    while (cursor)
+    {
+      Node *newNode = cursor->next;
+      if (newNode->random)
+        newNode->random = newNode->random->next;
 
+      cursor = newNode->next;
+    }
+    cursor = head;
+    while (cursor)
+    {
+      Node *node = cursor;
+      cursor = cursor->next;
+      if(cursor)
+        node->next = cursor->next;
+    }
+
+    Node *newCursor = newHead;
+    cursor = head;
     while (newCursor)
     {
       cout
