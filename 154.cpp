@@ -14,7 +14,7 @@ public:
   {
     if(left == right)
       return nums[left];
-    if (right-left == 1)
+    if (right - left == 1)
       return nums[left] < nums[right] ? nums[left] : nums[right];
 
     int middle = (right - left) / 2 + left;
@@ -24,6 +24,14 @@ public:
       } else {
         return findMin(nums, middle, right);
       }
+    } else if(nums[left] == nums[right]) {
+      if (nums[left] > nums[middle]) {
+        return findMin(nums, left, middle);
+      } else if(nums[left] < nums[middle]) {
+        return findMin(nums, middle, right);
+      } else {
+        return min(findMin(nums, left, middle), findMin(nums, middle, right));
+      }
     } else {
       return nums[left];
     }
@@ -32,7 +40,7 @@ public:
 
 int main()
 {
-  vector<int> x{3, 4, 5, 1, 2};
+  vector<int> x{2,2,2,0,2};
   cout << Solution().findMin(x) << endl;
   return 0;
 }
