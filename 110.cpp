@@ -1,6 +1,10 @@
 // Runtime: 12 ms, faster than 92.17% of C++ online submissions for Balanced Binary Tree.
 // Memory Usage: 18 MB, less than 6.38% of C++ online submissions for Balanced Binary Tree.
 
+// non_recursive answer
+// Runtime: 12 ms, faster than 90.62% of C++ online submissions for Balanced Binary Tree.
+// Memory Usage: 16.6 MB, less than 92.51% of C++ online submissions for Balanced Binary Tree.
+
 #include <iostream>
 #include <vector>
 #include <list>
@@ -95,14 +99,69 @@ string boolToString(bool input)
 class Solution
 {
 public:
-  bool isBalanced(TreeNode *root)
+  bool isBalanced(TreeNode *root) {
+    // return isBalanced_recursive(root);
+    return isBalanced_nonrecursive(root);
+  }
+  bool isBalanced_nonrecursive(TreeNode *root)
+  {
+    stack<TreeNode *> parentStack;
+    bool enterRemoveStack = false;
+    while (root || !parentStack.empty())
+    {
+      if (enterRemoveStack)
+      {
+        while (!parentStack.empty() && root == parentStack.top()->right)
+        {
+          root = parentStack.top();
+          // process root here
+          int maxVal = 1, left = 0, right = 0;
+          if (root->left){
+            maxVal = max(maxVal, root->left->val + 1);
+            left = root->left->val;
+          }
+          if (root->right){
+            maxVal = max(maxVal, root->right->val + 1);
+            right = root->right->val;
+          }
+          if (abs(left - right) >= 2)
+            return false;
+          root->val = maxVal;
+          parentStack.pop();
+        }
+        if (parentStack.empty())
+          break;
+        root = parentStack.top()->right;
+        enterRemoveStack = false;
+        continue;
+      }
+      if (root)
+      {
+        parentStack.push(root);
+        root = root->left;
+      }
+      else
+      {
+        TreeNode *parent = parentStack.top();
+        if (root == parent->right)
+        {
+          enterRemoveStack = true;
+          continue;
+        }
+        root = parent->right;
+      }
+    }
+
+    return true;
+  }
+  bool isBalanced_recursive(TreeNode *root)
   {
     if(!root)
       return true;
     if(abs(maxDepth(root->left) - maxDepth(root->right)) >= 2)
       return false;
-    return isBalanced(root->left) &&
-           isBalanced(root->right);
+    return isBalanced_recursive(root->left) &&
+           isBalanced_recursive(root->right);
   }
   int maxDepth(TreeNode *root) {
     if(!root)
@@ -123,7 +182,7 @@ public:
 
 int main()
 {
-  bool ret = Solution().isBalanced(stringToTreeNode("[1,2,2,3,3,null,null,4,4]"));
+  bool ret = Solution().isBalanced(stringToTreeNode("[1,2,2,3,3,3,3,4,4,4,4,4,4,null,null,5,5]"));
 
   cout << boolToString(ret) << endl;
   return 0;

@@ -1,4 +1,3 @@
-// Timeout exceeded
 
 #include <iostream>
 #include <vector>
