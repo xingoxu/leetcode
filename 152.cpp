@@ -1,4 +1,5 @@
-// TODO: find a faster solution
+// Runtime: 4 ms, faster than 94.15% of C++ online submissions for Maximum Product Subarray.
+// Memory Usage: 9 MB, less than 73.77% of C++ online submissions for Maximum Product Subarray.
 
 #include <iostream>
 #include <vector>
@@ -7,57 +8,40 @@ using namespace std;
 
 class Solution
 {
-  unordered_map<int, int> cache;
-  vector<int> maxProduct(vector<int> &nums, int numIndex)
-  {
-    auto current = nums[numIndex];
-    if (numIndex == nums.size() - 1)
-    {
-      cache[numIndex] = current;
-      return {current};
-    }
-    const auto &rightResult = maxProduct(nums, numIndex + 1);
-
-    int currentMax = INT_MIN, minusMax = INT_MIN, plusMax = INT_MIN;
-    for (int i = rightResult.size() - 1; i >= 0; i--)
-    {
-      auto product = rightResult[i] * current;
-      currentMax = max(currentMax, product);
-      if (product >= 0) {
-        plusMax = max(plusMax, product);
-      } else {
-        minusMax = max(minusMax, abs(product));
-      }
-    }
-    if (current >= 0)
-    {
-      plusMax = max(plusMax, current);
-    }
-    else
-    {
-      minusMax = max(minusMax, abs(current));
-    }
-    currentMax = max(currentMax, current);
-
-    cache[numIndex] = currentMax;
-    vector<int> result;
-    if(plusMax != INT_MIN)
-      result.push_back(plusMax);
-    if(minusMax != INT_MIN)
-      result.push_back(-minusMax);
-    return result;
-  }
-
 public:
   int maxProduct(vector<int> &nums)
   {
-    maxProduct(nums, 0);
-    int ret = INT_MIN;
-    for (int i = 0; i < nums.size(); i++)
+    int first = nums[nums.size() - 1];
+    int currentMax = first,
+        minusPrevious = first < 0 ? first : INT_MIN,
+        plusPrevious = first >= 0 ? first : INT_MIN;
+    for (int i = nums.size() - 2; i >= 0; i--)
     {
-      ret = max(ret, cache[i]);
+      auto current = nums[i];
+      if (minusPrevious != INT_MIN)
+      {
+        minusPrevious = minusPrevious * current;
+      }
+      if(plusPrevious != INT_MIN) {
+        plusPrevious = plusPrevious * current;
+      }
+      currentMax = max(currentMax, minusPrevious);
+      currentMax = max(currentMax, plusPrevious);
+      currentMax = max(currentMax, current);
+      int originPlusPrevious = plusPrevious;
+
+      plusPrevious = max(plusPrevious, max(minusPrevious, current));
+      if(minusPrevious == INT_MIN)
+        minusPrevious = current;
+      minusPrevious = max(-minusPrevious, -current) * (-1);
+      if(originPlusPrevious != INT_MIN)
+        minusPrevious = max(-originPlusPrevious, -minusPrevious) * (-1);
+      if(plusPrevious < 0)
+        plusPrevious = INT_MIN;
+      if(minusPrevious >=0)
+        minusPrevious = INT_MIN;
     }
-    return ret;
+    return currentMax;
   }
 };
 
