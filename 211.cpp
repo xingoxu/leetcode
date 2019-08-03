@@ -8,32 +8,29 @@ using namespace std;
 
 class WordDictionary
 {
-  vector<WordDictionary *> x;
-  bool hasWord = false;
-
 public:
+  bool hasWord = false;
+  vector<WordDictionary *> next;
   /** Initialize your data structure here. */
   WordDictionary()
   {
-    x = vector<WordDictionary *>(26);
+    next = vector<WordDictionary *>(26, NULL);
   }
 
   /** Adds a word into the data structure. */
   void addWord(string word)
   {
-    addWord(word, 0);
-  }
-  void addWord(string word, int iterator)
-  {
-    if (iterator == word.size())
+    int iterator = 0;
+    WordDictionary *cur = this;
+    while (iterator < word.size())
     {
-      this->hasWord = true;
-      return;
+      if (!cur->next[word[iterator] - 'a'])
+        cur->next[word[iterator] - 'a'] = new WordDictionary();
+
+      cur = cur->next[word[iterator] - 'a'];
+      iterator++;
     }
-    int chara = word[iterator] - 'a';
-    auto next = x[chara] ? x[chara] : new WordDictionary();
-    next->addWord(word, iterator + 1);
-    x[chara] = next;
+    cur->hasWord = true;
   }
 
   /** Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter. */
@@ -41,30 +38,29 @@ public:
   {
     return search(word, 0);
   }
-  bool search(string word, int iterator)
+  bool search(string &word, int iterator)
   {
     if (iterator == word.size())
       return hasWord;
     if (word[iterator] == '.')
     {
-      for (auto wd : x)
+      for (auto wd : next)
       {
         if (wd && wd->search(word, iterator + 1))
           return true;
       }
       return false;
     }
-    int chara = word[iterator] - 'a';
-    auto next = x[chara];
-    if (next)
-      return next->search(word, iterator + 1);
+    auto nextCur = next[word[iterator] - 'a'];
+    if (nextCur)
+      return nextCur->search(word, iterator + 1);
     else
       return false;
   }
 
   ~WordDictionary()
   {
-    for (auto wd : x)
+    for (auto wd : next)
     {
       if (wd != NULL)
         delete wd;
