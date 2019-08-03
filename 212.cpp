@@ -1,73 +1,80 @@
+// Runtime: 44 ms, faster than 89.04% of C++ online submissions for Word Search II.
+// Memory Usage: 37.4 MB, less than 48.89% of C++ online submissions for Word Search II.
+
 #include <iostream>
 #include <vector>
 using namespace std;
 
+struct Trie
+{
+  vector<Trie *> next = vector<Trie *>(26, NULL);
+  string word = "";
+};
+
 class Solution
 {
-  bool exist(vector<vector<char>> &board, string word, vector<vector<int>> &route, int x, int y, int wordPointer)
+  void dfs(vector<vector<char>> &board, Trie* cursor, int x, int y, vector<string> &result)
   {
-    if (board[x][y] != word[wordPointer])
-      return false;
-    if (wordPointer >= word.size() - 1)
-      return true;
-    route[x][y] = 1;
+    auto originCh = board[x][y];
+    if (board[x][y] == '*' || cursor == NULL || cursor->next[originCh - 'a'] == NULL)
+      return;
+    cursor = cursor->next[originCh - 'a'];
+    if (cursor->word != "")
+    {
+      result.push_back(cursor->word);
+      cursor->word = "";
+    }
+    board[x][y] = '*';
 
-    bool result = false;
-    if (x + 1 < board.size() && route[x + 1][y] != 1)
+    if (x + 1 < board.size())
     {
-      result = result || exist(board, word, route, x + 1, y, wordPointer + 1);
+      dfs(board, cursor, x + 1, y, result);
     }
-    if (x - 1 >= 0 && route[x - 1][y] != 1)
+    if (x - 1 >= 0)
     {
-      result = result || exist(board, word, route, x - 1, y, wordPointer + 1);
+      dfs(board, cursor, x - 1, y, result);
     }
-    if (y + 1 < board[x].size() && route[x][y + 1] != 1)
+    if (y + 1 < board[x].size())
     {
-      result = result || exist(board, word, route, x, y + 1, wordPointer + 1);
+      dfs(board, cursor, x, y + 1, result);
     }
-    if (y - 1 >= 0 && route[x][y - 1] != 1)
+    if (y - 1 >= 0)
     {
-      result = result || exist(board, word, route, x, y - 1, wordPointer + 1);
+      dfs(board, cursor, x, y - 1, result);
     }
-    route[x][y] = 0;
-    return result;
+    board[x][y] = originCh;
+  }
+
+  Trie *compileWords(vector<string> &words)
+  {
+    auto root = new Trie();
+    for (auto &word : words)
+    {
+      auto p = root;
+      for (auto ch : word)
+      {
+        int nextIndex = ch - 'a';
+        if (!p->next[nextIndex])
+        {
+          p->next[nextIndex] = new Trie();
+        }
+        p = p->next[nextIndex];
+      }
+      p->word = word;
+    }
+    return root;
   }
 
 public:
   vector<string> findWords(vector<vector<char>> &board, vector<string> &words)
   {
-    vector<vector<pair<int, int>>> startCache(26);
+    vector<string> ret;
+    auto root = compileWords(words);
     for (int i = 0; i < board.size(); i++)
     {
       for (int j = 0; j < board[i].size(); j++)
       {
-        auto currentChar = board[i][j];
-        startCache[(currentChar - 'a')].push_back({i, j});
-      }
-    }
-    vector<vector<int>> route(board.size());
-    for (int i = 0; i < route.size(); i++)
-    {
-      route[i].resize(board[i].size());
-    }
-    vector<string> ret;
-    for (int i = 0; i < words.size(); i++)
-    {
-      auto currentWord = words[i];
-      if (currentWord == "")
-      {
-        ret.push_back(currentWord);
-        continue;
-      }
-      auto &start = startCache[(currentWord[0] - 'a')];
-      for (int j = 0; j < start.size(); j++)
-      {
-        auto [x, y] = start[j];
-        if (exist(board, currentWord, route, x, y, 0))
-        {
-          ret.push_back(currentWord);
-          break;
-        }
+        dfs(board, root, i, j, ret);
       }
     }
     return ret;
