@@ -1,3 +1,7 @@
+// Runtime: 40 ms, faster than 31.62% of C++ online submissions for Contains Duplicate II.
+// Memory Usage: 19.9 MB, less than 9.68% of C++ online submissions for Contains Duplicate II.
+// TODO
+
 #include <iostream>
 #include <vector>
 #include <unordered_map>
