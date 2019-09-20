@@ -1,3 +1,6 @@
+// Runtime: 20 ms, faster than 5.90% of C++ online submissions for Verify Preorder Serialization of a Binary Tree.
+// Memory Usage: 9.2 MB, less than 25.00% of C++ online submissions for Verify Preorder Serialization of a Binary Tree.
+// It's o(n) so I think there won't be so much places can be optimized.
 
 #include <iostream>
 #include <vector>
