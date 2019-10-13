@@ -1,4 +1,3 @@
-// TODO: to understand, to realize the binary search with dynamic programming
 
 #include <iostream>
 #include <vector>
