@@ -1,3 +1,5 @@
+// Runtime: 16 ms, faster than 88.75% of C++ online submissions for Path Sum III.
+// Memory Usage: 17.7 MB, less than 19.35% of C++ online submissions for Path Sum III.
 
 #include <iostream>
 #include <vector>
@@ -6,7 +8,7 @@
 #include <sstream>
 #include <queue>
 #include <stack>
-#include <unordered_set>
+#include <unordered_map>
 
 using namespace std;
 
@@ -116,44 +118,36 @@ string treeNodeToString(TreeNode *root)
 
 class Solution
 {
-  int result = 0;
-  void getSet(list<int> &x, list<int> &next, int rootVal, int &sum) {
-    for (auto &a : x)
-    {
-      if (a + rootVal == sum)
-        ++result;
-      next.push_back(a + rootVal);
-    }
-  }
-  list<int> dfs(TreeNode *root, int &sum)
+  int count = 0;
+  unordered_map<int, int> prefix;
+  void pathSum(TreeNode *root, int &pre, int &target)
   {
-    list<int> lChild, rChild;
-    if (root->left)
-      lChild = dfs(root->left, sum);
-    if(root->right)
-      rChild = dfs(root->right, sum);
-    list<int> next;
-    getSet(lChild, next,root->val, sum);
-    getSet(rChild, next,root->val, sum);
-    if (root->val == sum)
-      ++result;
-    next.push_back(root->val);
-
-    return next;
+    if(!root)
+      return;
+    int now = root->val + pre;
+    auto p = prefix.find(now - target);
+    if (p != prefix.end())
+    {
+      count += p->second;
+    }
+    ++prefix[now];
+    pathSum(root->left, now, target);
+    pathSum(root->right, now, target);
+    --prefix[now];
   }
 
 public:
   int pathSum(TreeNode *root, int sum)
   {
-    result = 0;
-    if(root)
-      dfs(root, sum);
-    return result;
+    prefix[0] = 1;
+    int pre = 0;
+    pathSum(root, pre, sum);
+    return count;
   }
 };
 
 int main()
 {
-  cout << Solution().pathSum(stringToTreeNode("[10,5,-3,3,2,null,11,3,-2,null,1]"), 8) << endl;
+  cout << Solution().pathSum(stringToTreeNode("[1,-2,-3,1,3,-2,null,-1]"), -1) << endl;
   return 0;
 }
