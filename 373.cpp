@@ -17,7 +17,7 @@ public:
       return (a[0] + a[1]) > (b[0] + b[1]);
     };
     priority_queue<vector<int>, vector<vector<int>>, decltype(comp)> pq(comp);
-    for(auto &x: nums1)
+    for (auto &x : nums1)
       pq.push({x, nums2[0], 0});
 
     vector<vector<int>> ret;
