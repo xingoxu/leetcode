@@ -1,3 +1,7 @@
+// Runtime: 724 ms, faster than 5.31% of C++ online submissions for LFU Cache.
+// Memory Usage: 39.2 MB, less than 81.82% of C++ online submissions for LFU Cache.
+// TODO: find a faster solution
+
 #include <iostream>
 #include <vector>
 #include <unordered_map>
