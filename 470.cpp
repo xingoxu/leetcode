@@ -6,6 +6,7 @@ using namespace std;
 int rand7();
 // @return a random integer in the range 1 to 7
 
+// TODO: remember this
 class Solution
 {
 public:
